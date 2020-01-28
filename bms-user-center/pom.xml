@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>tech.mufeng.boilerplate.bms</groupId>
+        <artifactId>dependencies-manage</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../bms-dependence-manage/pom.xml</relativePath>
+    </parent>
+    <artifactId>user-center</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>user-center</name>
+    <description>用户管理服务</description>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- Dubbo start -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-client</artifactId>
+        </dependency>
+        <!-- Dubbo end -->
+    </dependencies>
+
+    <build>
+        <finalName>USER-CENTER</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
