@@ -8,13 +8,20 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../bms-dependence-manage/pom.xml</relativePath>
     </parent>
-    <artifactId>user-center</artifactId>
+    <artifactId>id-generator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>bms-user-center</name>
-    <description>用户管理服务</description>
+    <name>bms-id-generator</name>
+    <description>ID生成服务</description>
     <packaging>jar</packaging>
 
     <dependencies>
+        <!-- 内部模块 start -->
+        <dependency>
+            <groupId>tech.mufeng.boilerplate.bms</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <!-- 内部模块 end -->
+
         <!-- Dubbo start -->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
@@ -25,10 +32,18 @@
             <artifactId>nacos-client</artifactId>
         </dependency>
         <!-- Dubbo end -->
+
+        <!-- Zookeeper start -->
+        <!-- https://mvnrepository.com/artifact/org.apache.curator/curator-recipes -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+        </dependency>
+        <!-- Zookeeper end -->
     </dependencies>
 
     <build>
-        <finalName>USER-CENTER</finalName>
+        <finalName>ID-GENERATOR</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -16,8 +16,10 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<!-- 业务服务模块 -->
 		<module>bms-dependence-manage</module>
 		<module>bms-common</module>
+		<module>bms-id-generator</module>
 		<module>bms-user-center</module>
 	</modules>
 
