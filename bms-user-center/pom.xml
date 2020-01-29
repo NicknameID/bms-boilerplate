@@ -14,7 +14,13 @@
     <description>用户管理服务</description>
     <packaging>jar</packaging>
 
-    <dependencies>
+    <dependencies><!-- 内部模块 start -->
+        <dependency>
+            <groupId>tech.mufeng.boilerplate.bms</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <!-- 内部模块 end -->
+
         <!-- Dubbo start -->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
