@@ -11,8 +11,8 @@ dubbo:
     address: nacos://127.0.0.1:8848
   protocol:
     name: dubbo
-    port: -1
+    port: -1 # 随机端口
   provider:
     timeout: 10000 # 超时时间10s
-    retries: 3
-    loadbalance: roundrobin # 轮询
+    retries: 3 # 重试3次
+    loadbalance: random # 随机

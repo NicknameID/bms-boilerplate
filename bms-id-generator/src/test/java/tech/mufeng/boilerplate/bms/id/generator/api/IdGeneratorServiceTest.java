@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Slf4j
-class IdGeneratorTest {
+class IdGeneratorServiceTest {
     @Resource
     private IdGenerator idGenerator;
 

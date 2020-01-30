@@ -3,25 +3,29 @@ package tech.mufeng.boilerplate.bms.id.generator.component;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.utils.CloseableUtils;
+import org.apache.curator.utils.ZKPaths;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import tech.mufeng.boilerplate.bms.common.utils.IpUtil;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
-import java.io.File;
-import java.util.*;
 
 @Component
 @Slf4j
 public class IdGeneratorZookeeperRegister {
     private static final int MAX_MACHINE_ID = 31;
 
-    private static final String separator = File.separator;
-    private String rootPath;
     @Getter
-    private Long workerId = 0L;
+    private int workerId = 0;
+    private String currentNodePath;
+    private PathChildrenCache pathChildrenCache;
 
     @Value("${spring.application.name}")
     private String prefixPath;
@@ -30,113 +34,85 @@ public class IdGeneratorZookeeperRegister {
     private CuratorFramework zkClient;
 
     @PostConstruct
-    public void init() {
-        rootPath = getRootPath();
-        String fullNodePath = getFullNodePath();
-        log.info("fullNodePath: {}", fullNodePath);
-        // 注册当前节点
-        String currentNode = createNode(fullNodePath);
-        // 所有子节点
-        List<String> childNodes = getChildNodes();
-        log.info("childNodes: {}", childNodes);
-        // 子节点的workerId
-        List<Integer> childWorkerIds = getSortChildrenWorkerId(childNodes);
-        log.info("childWorkerIds: {}", childWorkerIds);
-        int checkId = 0;
-        while (true) {
-            if (checkId > MAX_MACHINE_ID) {
-                throw new RuntimeException(String.format("机器数超过限制: %d", (MAX_MACHINE_ID + 1)));
+    public void init() throws Exception {
+        String rootPath = ZKPaths.makePath(ZKPaths.PATH_SEPARATOR, prefixPath);
+        String nodePath = ZKPaths.makePath(rootPath, IpUtil.getIp() + "-");
+        log.info("nodePath: {}", nodePath);
+        currentNodePath = createNode(nodePath, workerId);
+        // 设置节点监听器
+        pathChildrenCache = new PathChildrenCache(zkClient, rootPath, true);
+        pathChildrenCache.start();
+        pathChildrenCache.getListenable().addListener((client, event) -> {
+            switch ( event.getType() ) {
+                case CHILD_ADDED: {
+                    log.info("[Watcher]-新增节点: {}", ZKPaths.getNodeFromPath(event.getData().getPath()));
+                    checkOtherNodeData(event.getData());
+                    break;
+                }
+
+                case CHILD_UPDATED: {
+                    log.info("[Watcher]-更新节点: {}", ZKPaths.getNodeFromPath(event.getData().getPath()));
+                    checkOtherNodeData(event.getData());
+                    break;
+                }
+
+                case CHILD_REMOVED: {
+                    log.info("[Watcher]-删除节点: {}", ZKPaths.getNodeFromPath(event.getData().getPath()));
+                    checkOtherNodeData(event.getData());
+                    break;
+                }
+                // ZK挂掉
+                case CONNECTION_SUSPENDED: break;
+
+                // 重新启动ZK
+                case CONNECTION_RECONNECTED: break;
+
+                // ZK挂掉一段时间后
+                case CONNECTION_LOST: break;
+
+                // 初始化
+                case INITIALIZED: break;
+
+                default: break;
             }
-            if (childWorkerIds.contains(checkId)) {
-                checkId++;
-            }else {
-                break;
-            }
-        }
-        // 设置当前的workerId为checkId
-        setWorkerIdByNodePath(currentNode, checkId);
-        workerId = (long) checkId;
-        log.info("工作节点注册成功: {}, 解析workerId为: {}", currentNode, workerId);
-    }
-
-    private String getFullNodePath() {
-        return getRootPath() + getNodePath();
-    }
-
-    private String getRootPath() {
-        return separator + prefixPath;
-    }
-
-    private String getNodePath() {
-        String ip = IpUtil.getIp();
-        return separator + ip + "-";
-    }
-
-    private String createNode(String zNodePath) {
-        try {
-            return zkClient.create()
-                    .creatingParentContainersIfNeeded()
-                    .withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
-                    .forPath(zNodePath, "-1".getBytes());
-        }catch (Exception e) {
-            log.error("创建节点错误", e);
-            throw new RuntimeException(e.getCause());
-        }
-    }
-
-//    private long getWorkerIdAsLong() {
-//        if (currentNode == null) return 0;
-//        long n = nodeToIdAsLong(currentNode);
-//        long modId = n % (MAX_MACHINE_ID + 1);
-//        if (n > MAX_MACHINE_ID)
-//        return modId;
-//    }
-//
-//    private static long nodeToIdAsLong(String node) {
-//        Matcher matcher = PATTERN_NODE_NAME.matcher(node);
-//        if (matcher.matches()) {
-//            return Long.parseLong(matcher.group(1));
-//        }
-//        return 0;
-//    }
-
-    private List<String> getChildNodes() {
-        String rootPath = getRootPath();
-        try {
-            return zkClient.getChildren().forPath(rootPath);
-        }catch (Exception e) {
-            throw new RuntimeException("获取节点失败", e.getCause());
-        }
-    }
-
-    private List<Integer> getSortChildrenWorkerId(List<String> childNodes) {
-        if (childNodes.isEmpty()) return Collections.emptyList();
-        Set<Integer> workerIdSet = new HashSet<>();
-        childNodes.forEach(childNode -> {
-            int workerId = getWorkerIdByNodePath(rootPath + separator + childNode);
-            workerIdSet.add(workerId);
         });
-        List<Integer> workerIds = new ArrayList<>(workerIdSet);
-        Collections.sort(workerIds);
-        return workerIds;
+        log.info("工作节点注册成功: {}, 解析workerId为: {}", currentNodePath, this.workerId);
     }
 
-    private int getWorkerIdByNodePath(String nodePath) {
-        try {
-            byte[] workerIdRaw = zkClient.getData().forPath(nodePath);
-            String workerIdStr = new String(workerIdRaw);
-            return Integer.parseInt(workerIdStr);
-        }catch (Exception e) {
-            throw new RuntimeException("获取节点数据失败", e.getCause());
-        }
+    @PreDestroy
+    public void destroy() {
+        CloseableUtils.closeQuietly(pathChildrenCache);
+        log.info("close pathChildrenCache success");
+        CloseableUtils.closeQuietly(zkClient);
+        log.info("close zkClient success");
     }
 
-    private void setWorkerIdByNodePath(String nodePath, int workerId) {
-        try {
-            Object value = zkClient.setData().forPath(nodePath, String.valueOf(workerId).getBytes());
-            log.info("update workerId by nodePath: {}; value: {}", nodePath, value);
-        }catch (Exception e) {
-            throw new RuntimeException("设置节点数据失败", e.getCause());
+    private String createNode(String nodePath, int workerId) throws Exception {
+        return zkClient.create()
+                .creatingParentContainersIfNeeded()
+                .withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
+                .forPath(nodePath, String.valueOf(workerId).getBytes());
+    }
+
+    private void setWorkerIdByNodePath(String nodePath, int workerId) throws Exception{
+        zkClient.setData().forPath(nodePath, String.valueOf(workerId).getBytes());
+        log.info("设置节点={};workerId={}", ZKPaths.getNodeFromPath(nodePath), workerId);
+    }
+
+    private void checkOtherNodeData(ChildData childData) throws Exception{
+        if (childData == null) return;
+        String path = childData.getPath();
+        if (currentNodePath.equals(path)) return;
+        String otherWorkerId = new String(childData.getData());
+        if (StringUtils.isEmpty(otherWorkerId)) return;
+        String myWorkId = String.valueOf(workerId);
+        if (otherWorkerId.equals(myWorkId)) {
+            log.info("workerId冲突, 准备重新设置...");
+            workerId++;
+            if (workerId > MAX_MACHINE_ID) {
+                throw new Exception(String.format("超过最大WorkerID值: %s", MAX_MACHINE_ID));
+            }
+            setWorkerIdByNodePath(currentNodePath, workerId);
         }
     }
 }

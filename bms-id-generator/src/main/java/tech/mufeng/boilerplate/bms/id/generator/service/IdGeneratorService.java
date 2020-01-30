@@ -1,8 +1,10 @@
-package tech.mufeng.boilerplate.bms.id.generator.component;
+package tech.mufeng.boilerplate.bms.id.generator.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import tech.mufeng.boilerplate.bms.id.generator.api.IdGenerator;
+import tech.mufeng.boilerplate.bms.id.generator.component.IdGeneratorZookeeperRegister;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -27,9 +29,9 @@ import java.time.ZoneId;
  * It can generate 64k unique id per IP and up to 2106-02-07T06:28:15Z.
  */
 @Slf4j
-@Component
+@Service
 @Scope("singleton")
-public final class IdGeneratorComponent {
+public final class IdGeneratorService implements IdGenerator {
     private static final long OFFSET = LocalDate.of(2000, 1, 1).atStartOfDay(ZoneId.of("Z")).toEpochSecond();
 
     private static final long MAX_NEXT = 0b11111_11111111_111L;
@@ -40,7 +42,7 @@ public final class IdGeneratorComponent {
 
     private final long SHARD_ID;
 
-    public IdGeneratorComponent(IdGeneratorZookeeperRegister idGeneratorZookeeperRegister) {
+    public IdGeneratorService(IdGeneratorZookeeperRegister idGeneratorZookeeperRegister) {
         SHARD_ID = idGeneratorZookeeperRegister.getWorkerId();
     }
 
