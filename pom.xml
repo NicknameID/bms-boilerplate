@@ -10,15 +10,15 @@
 	</parent>
 	<groupId>tech.mufeng.boilerplate</groupId>
 	<artifactId>bms</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>bms-boilerplate</name>
 	<description>分布式服务开发脚手架项目</description>
 	<packaging>pom</packaging>
 
 	<modules>
 		<!-- 业务服务模块 -->
-		<module>bms-dependence-manage</module>
 		<module>bms-common</module>
+		<module>bms-dependence-manage</module>
 		<module>bms-id-generator</module>
 		<module>bms-user-center</module>
 	</modules>

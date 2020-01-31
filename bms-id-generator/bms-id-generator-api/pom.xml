@@ -6,17 +6,21 @@
         <groupId>tech.mufeng.boilerplate.bms</groupId>
         <artifactId>dependencies-manage</artifactId>
         <version>1.0.0</version>
-        <relativePath>../bms-dependence-manage/pom.xml</relativePath>
+        <relativePath>../../bms-dependence-manage/pom.xml</relativePath>
     </parent>
-
-    <artifactId>id-generator</artifactId>
+    <artifactId>id-generator-api</artifactId>
     <version>1.0.0</version>
-    <name>bms-id-generator</name>
+    <name>bms-id-generator-api</name>
     <description>ID生成服务</description>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <modules>
-        <module>bms-id-generator-api</module>
-        <module>bms-id-generator-service</module>
-    </modules>
+    <build>
+        <finalName>ID-GENERATOR</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

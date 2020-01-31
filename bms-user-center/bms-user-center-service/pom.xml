@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>tech.mufeng.boilerplate.bms</groupId>
+        <artifactId>dependencies-manage</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../../bms-dependence-manage/pom.xml</relativePath>
+    </parent>
+    <artifactId>user-center-service</artifactId>
+    <version>1.0.0</version>
+    <name>bms-user-center-service</name>
+    <description>用户管理服务服务提供服务</description>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- 内部模块 start -->
+        <dependency>
+            <groupId>tech.mufeng.boilerplate.bms</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tech.mufeng.boilerplate.bms</groupId>
+            <artifactId>id-generator-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tech.mufeng.boilerplate.bms</groupId>
+            <artifactId>user-center-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tech.mufeng.boilerplate.bms</groupId>
+            <artifactId>user-center-api</artifactId>
+        </dependency>
+        <!-- 内部模块 end -->
+
+        <!-- Spring start -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        <!-- Spring end -->
+
+        <!-- DB about start -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+        <!-- DB about end -->
+
+        <!-- Dubbo start -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-client</artifactId>
+        </dependency>
+        <!-- Dubbo end -->
+    </dependencies>
+
+    <build>
+        <finalName>bms-user-center-service</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>tech.mufeng.boilerplate.bms.user.center.service.UserCenterServiceApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

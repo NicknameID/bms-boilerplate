@@ -6,16 +6,28 @@
         <groupId>tech.mufeng.boilerplate.bms</groupId>
         <artifactId>dependencies-manage</artifactId>
         <version>1.0.0</version>
-        <relativePath>../bms-dependence-manage/pom.xml</relativePath>
+        <relativePath>../../bms-dependence-manage/pom.xml</relativePath>
     </parent>
-    <artifactId>common</artifactId>
+    <artifactId>user-center-common</artifactId>
     <version>1.0.0</version>
-    <name>bms-common</name>
-    <description>通用包</description>
+    <name>bms-user-center-common</name>
+    <description>用户管理服务通用包</description>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>tech.mufeng.boilerplate.bms</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <!-- 只提供编译范围不打入jar包 -->
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
     <build>
-        <finalName>BMS-COMMON</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

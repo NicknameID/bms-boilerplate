@@ -5,55 +5,102 @@
     <parent>
         <groupId>tech.mufeng.boilerplate</groupId>
         <artifactId>bms</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>tech.mufeng.boilerplate.bms</groupId>
     <artifactId>dependencies-manage</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>bms-dependence-manage</name>
     <description>项目依赖管理</description>
     <packaging>pom</packaging>
 
     <properties>
-        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dubbo-spring-boot-starter.version>2.7.5</dubbo-spring-boot-starter.version>
         <nacos-client.version>1.1.4</nacos-client.version>
         <curator-recipes.version>4.2.0</curator-recipes.version>
+        <inner-module.version>1.0.0</inner-module.version>
     </properties>
 
     <!--  版本管理  -->
     <dependencyManagement>
         <dependencies>
-            <!-- 内部模块 -->
+            <!-- 内部模块 start-->
+            <!-- Module Common -->
             <dependency>
                 <groupId>tech.mufeng.boilerplate.bms</groupId>
                 <artifactId>common</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${inner-module.version}</version>
             </dependency>
 
-            <!-- 外部依赖 -->
+            <!-- Module ID Generator -->
             <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-spring-boot-starter</artifactId>
-                <version>${dubbo-spring-boot-starter.version}</version>
+                <groupId>tech.mufeng.boilerplate.bms</groupId>
+                <artifactId>id-generator-api</artifactId>
+                <version>${inner-module.version}</version>
             </dependency>
-
             <dependency>
-                <groupId>com.alibaba.nacos</groupId>
-                <artifactId>nacos-client</artifactId>
-                <version>${nacos-client.version}</version>
+                <groupId>tech.mufeng.boilerplate.bms</groupId>
+                <artifactId>id-generator-service</artifactId>
+                <version>${inner-module.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.apache.curator/curator-recipes -->
+            <!-- Module User Center -->
+            <dependency>
+                <groupId>tech.mufeng.boilerplate.bms</groupId>
+                <artifactId>user-center-common</artifactId>
+                <version>${inner-module.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.mufeng.boilerplate.bms</groupId>
+                <artifactId>user-center-api</artifactId>
+                <version>${inner-module.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.mufeng.boilerplate.bms</groupId>
+                <artifactId>user-center-service</artifactId>
+                <version>${inner-module.version}</version>
+            </dependency>
+            <!-- 内部模块 end-->
+
+            <!-- 外部依赖 start -->
+            <!-- Spring about start -->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>5.2.0.RELEASE</version>
+            </dependency>
+            <!-- Spring about end -->
+
+            <!-- DB about start -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>3.2.0</version>
+            </dependency>
             <!-- https://mvnrepository.com/artifact/org.apache.curator/curator-recipes -->
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-recipes</artifactId>
                 <version>${curator-recipes.version}</version>
             </dependency>
+            <!-- DB about end -->
+
+            <!-- RPC about start -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo-spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+                <version>${nacos-client.version}</version>
+            </dependency>
+            <!-- RPC about end -->
+            <!-- 外部依赖 end -->
 
         </dependencies>
     </dependencyManagement>
