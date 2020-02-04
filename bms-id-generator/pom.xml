@@ -17,6 +17,6 @@
 
     <modules>
         <module>bms-id-generator-api</module>
-        <module>bms-id-generator-service</module>
+        <module>bms-id-generator-rpc-server</module>
     </modules>
 </project>

@@ -1,0 +1,22 @@
+server:
+  port: 7701
+spring:
+  application:
+    name: 'user-center-rpc-server'
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:8889/bms-user-center?characterEncoding=utf-8&useSSL=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+dubbo:
+  registry:
+    protocol: nacos
+    address: nacos://127.0.0.1:8848
+  protocol:
+    name: dubbo
+    port: -1
+  provider:
+    timeout: 10000 # 超时时间10s
+    retries: 3
+    loadbalance: leastactive # 最少活跃调用数, 使慢的提供者收到更少请求

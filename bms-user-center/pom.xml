@@ -18,6 +18,6 @@
     <modules>
         <module>bms-user-center-common</module>
         <module>bms-user-center-api</module>
-        <module>bms-user-center-service</module>
+        <module>bms-user-center-rpc-server</module>
     </modules>
 </project>

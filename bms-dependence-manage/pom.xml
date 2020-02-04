@@ -43,7 +43,7 @@
             </dependency>
             <dependency>
                 <groupId>tech.mufeng.boilerplate.bms</groupId>
-                <artifactId>id-generator-service</artifactId>
+                <artifactId>id-generator-rpc-server</artifactId>
                 <version>${inner-module.version}</version>
             </dependency>
 
@@ -60,7 +60,7 @@
             </dependency>
             <dependency>
                 <groupId>tech.mufeng.boilerplate.bms</groupId>
-                <artifactId>user-center-service</artifactId>
+                <artifactId>user-center-rpc-server</artifactId>
                 <version>${inner-module.version}</version>
             </dependency>
             <!-- 内部模块 end-->
